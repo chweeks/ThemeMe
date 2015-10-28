@@ -20,17 +20,29 @@ angular.module('thememe', ['ionic', 'ui.router'])
 
 .config(function($stateProvider, $urlRouterProvider) {
 
-  $stateProvider.state('home', {
-    url: '/',
-    templateUrl: 'index.html',
-    controller: 'themeMe'
-  });
+  $urlRouterProvider.otherwise("/");
 
-  $stateProvider.state('setsong', {
-    url: 'setsong',
-    templateUrl: 'setsong.html',
-    controller: 'themeMe'
-  });
+  $stateProvider
+    .state('home', {
+      cache: false,
+      url: '/',
+      templateUrl: 'templates/home.html',
+      controller: 'themeMe'
+    })
+
+    .state('setsong', {
+      cache: false,
+      url: '/',
+      templateUrl: 'templates/setsong.html',
+      controller: 'themeMe'
+    })
+
+    .state('playtheme', {
+      cache: false,
+      url: '/',
+      templateUrl: 'templates/play.html',
+      controller: 'themeMe'
+    })
 
 })
 
@@ -43,11 +55,6 @@ angular.module('thememe', ['ionic', 'ui.router'])
 
   self.getUser = function(email, password, passwordconf) {
     self.userHash = {'email': email, 'password': password, 'passwordConf': passwordconf};
-  };
-
-  self.makePost = function(url) {
-    var newUrl = { 'url': url };
-    $http.post('http://agile-waters-4177.herokuapp.com/sounds', newUrl, 'POST').then(console.log("Post worked"), console.log("You're a scumbag"));
   };
 
   self.makeGet = function(id) {
@@ -83,7 +90,7 @@ angular.module('thememe', ['ionic', 'ui.router'])
   self.userSignUp = function(email, password, passwordconf) {
     var postData = { 'email':email, 'password': password, 'password_confirmation': passwordconf};
     $http.post('http://agile-waters-4177.herokuapp.com/users', postData, 'POST').then(function() {
-    $state.go('setsong');
+      $state.go('setsong');
     });
   };
 
