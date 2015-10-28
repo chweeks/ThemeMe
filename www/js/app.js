@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('thememe', ['ionic', 'ui.router'])
+angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -37,6 +37,13 @@ angular.module('thememe', ['ionic', 'ui.router'])
       controller: 'themeMe'
     })
 
+    // .state('userhome', {
+    //   cache: false,
+    //   url: '/',
+    //   templateUrl: 'templates/userhome.html',
+    //   controller: 'themeMe'
+    // })
+
     .state('playtheme', {
       cache: false,
       url: '/',
@@ -46,12 +53,14 @@ angular.module('thememe', ['ionic', 'ui.router'])
 
 })
 
-.controller('themeMe', function($http, $sce, $state, $location) {
+.controller('themeMe', function($http, $sce, $state, $location, $cookies, $cordovaGeolocation, $interval) {
   var self = this;
 
   self.searchResults = [];
 
   self.themeSong = '';
+
+  self.userID;
 
   self.getUser = function(email, password, passwordconf) {
     self.userHash = {'email': email, 'password': password, 'passwordConf': passwordconf};
@@ -83,28 +92,62 @@ angular.module('thememe', ['ionic', 'ui.router'])
   };
 
   self.setThemeSong = function(songurl) {
-    var newUrl = { 'url': songurl };
-    $http.post('http://agile-waters-4177.herokuapp.com/sounds', newUrl, 'POST').then("Post worked", "You're a scumbag");
+    var newUrl = { 'sound': songurl };
+    var currentUser = $cookies.get('currentUser');
+    console.log(self.userID);
+    $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, newUrl, 'PUT').then("Post worked", "You're a scumbag");
   };
 
   self.userSignUp = function(email, password, passwordconf) {
-    var postData = { 'email':email, 'password': password, 'password_confirmation': passwordconf};
-    $http.post('http://agile-waters-4177.herokuapp.com/users', postData, 'POST').then(function() {
+    var newUser = { 'email': email, 'password': password, 'passwordconf': passwordconf };
+    $http.post('http://agile-waters-4177.herokuapp.com/users', newUser, 'POST').then(function successCallback(response){
+      var user_id = angular.fromJson(response).data.user;
+      $cookies.put('currentUser', user_id);
       $state.go('setsong');
-    });
+   });
   };
 
-  self.mainSong = function(id) {
+  self.mainSong = function() {
+    var currentUser = $cookies.get('currentUser');
     $http({
       method: 'GET',
-      url: 'http://agile-waters-4177.herokuapp.com/sounds/'+id
+      url: 'http://agile-waters-4177.herokuapp.com/users/'+currentUser
     }).then(function successCallback(response) {
       var data = angular.fromJson(response);
-      self.themeSong = 'https://w.soundcloud.com/player/?url=' + response.data.url + '&auto_play=true';
+      self.themeSong = 'https://w.soundcloud.com/player/?url=' + response.data.sound + '&auto_play=true';
     });
 
     self.trustSrc = function(src) {
       return $sce.trustAsResourceUrl(src);
     };
   };
+
+   self.distance = "";
+   self.ownLat = "";
+   self.ownLong = "";
+
+   var posOptions = {timeout: 5000, enableHighAccuracy: true};
+
+   $interval(function(){
+    $cordovaGeolocation.getCurrentPosition(posOptions)
+    .then(function(position){
+                 var lat  = position.coords.latitude;
+                 self.ownLat = lat;
+                 var long = position.coords.longitude;
+                 self.ownLong = long;
+                 // self.coor.push(lat);
+                 // self.coor.push(long);
+                //  console.log('lat', lat);
+                //  console.log('long', long);
+                //  console.log('coor', self.coor);
+                var coords = { 'lon': long , 'lat': lat}
+                var currentUser = $cookies.get('currentUser');
+                $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, coords, 'POST').then(function successCallback(response){
+                });
+             }, function(error){
+                 console.log('error:', error);
+             });
+   }, 10000);
+
+
 });
