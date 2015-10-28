@@ -92,10 +92,38 @@ angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
   };
 
   self.setThemeSong = function(songurl) {
-    var newUrl = { 'sound': songurl };
+    // var newUrl = { 'sound': songurl, 'lon': long, 'lat': lat };
     var currentUser = $cookies.get('currentUser');
     console.log(self.userID);
-    $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, newUrl, 'PUT').then("Post worked", "You're a scumbag");
+    self.distance = "";
+    self.ownLat = "";
+    self.ownLong = "";
+
+    var posOptions = {timeout: 5000, enableHighAccuracy: true};
+
+    $interval(function(){
+     $cordovaGeolocation.getCurrentPosition(posOptions)
+     .then(function(position){
+                  var lat  = position.coords.latitude;
+                  self.ownLat = lat;
+                  var long = position.coords.longitude;
+                  self.ownLong = long;
+                  // self.coor.push(lat);
+                  // self.coor.push(long);
+                  console.log('lat', lat);
+                  console.log('long', long);
+                 //  console.log('coor', self.coor);
+                //  var coords = { 'lon': long , 'lat': lat}
+                //  var currentUser = $cookies.get('currentUser');
+                //  $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, coords, 'POST').then(function successCallback(response){
+                //  });
+                var newUrl = { 'sound': songurl, 'lon': long, 'lat': lat };
+                $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, newUrl, 'PUT').then("Post worked", "You're a scumbag");
+              }, function(error){
+                  console.log('error:', error);
+              });
+    }, 10000);
+    // $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, newUrl, 'PUT').then("Post worked", "You're a scumbag");
   };
 
   self.userSignUp = function(email, password, passwordconf) {
@@ -122,32 +150,32 @@ angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
     };
   };
 
-   self.distance = "";
-   self.ownLat = "";
-   self.ownLong = "";
-
-   var posOptions = {timeout: 5000, enableHighAccuracy: true};
-
-   $interval(function(){
-    $cordovaGeolocation.getCurrentPosition(posOptions)
-    .then(function(position){
-                 var lat  = position.coords.latitude;
-                 self.ownLat = lat;
-                 var long = position.coords.longitude;
-                 self.ownLong = long;
-                 // self.coor.push(lat);
-                 // self.coor.push(long);
-                //  console.log('lat', lat);
-                //  console.log('long', long);
-                //  console.log('coor', self.coor);
-                var coords = { 'lon': long , 'lat': lat}
-                var currentUser = $cookies.get('currentUser');
-                $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, coords, 'POST').then(function successCallback(response){
-                });
-             }, function(error){
-                 console.log('error:', error);
-             });
-   }, 10000);
+  //  self.distance = "";
+  //  self.ownLat = "";
+  //  self.ownLong = "";
+   //
+  //  var posOptions = {timeout: 5000, enableHighAccuracy: true};
+   //
+  //  $interval(function(){
+  //   $cordovaGeolocation.getCurrentPosition(posOptions)
+  //   .then(function(position){
+  //                var lat  = position.coords.latitude;
+  //                self.ownLat = lat;
+  //                var long = position.coords.longitude;
+  //                self.ownLong = long;
+  //                // self.coor.push(lat);
+  //                // self.coor.push(long);
+  //               //  console.log('lat', lat);
+  //               //  console.log('long', long);
+  //               //  console.log('coor', self.coor);
+  //               var coords = { 'lon': long , 'lat': lat}
+  //               var currentUser = $cookies.get('currentUser');
+  //               $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, coords, 'POST').then(function successCallback(response){
+  //               });
+  //            }, function(error){
+  //                console.log('error:', error);
+  //            });
+  //  }, 10000);
 
 
 });
