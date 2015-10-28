@@ -37,13 +37,6 @@ angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
       controller: 'themeMe'
     })
 
-    // .state('userhome', {
-    //   cache: false,
-    //   url: '/',
-    //   templateUrl: 'templates/userhome.html',
-    //   controller: 'themeMe'
-    // })
-
     .state('playtheme', {
       cache: false,
       url: '/',
@@ -70,7 +63,7 @@ angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
 
     $http({
       method: 'GET',
-      url: 'http://agile-waters-4177.herokuapp.com/sounds/'+id
+      url: 'https://agile-waters-4177.herokuapp.com/sounds/'+id
     }).then(function successCallback(response) {
       var data = angular.fromJson(response);
         console.log(response.data.url);
@@ -118,7 +111,7 @@ angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
                 //  $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, coords, 'POST').then(function successCallback(response){
                 //  });
                 var newUrl = { 'sound': songurl, 'lon': long, 'lat': lat };
-                $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, newUrl, 'PUT').then("Post worked", "You're a scumbag");
+                $http.put('https://agile-waters-4177.herokuapp.com/users/'+currentUser, newUrl, 'PUT').then("Post worked", "You're a scumbag");
               }, function(error){
                   console.log('error:', error);
               });
@@ -128,7 +121,7 @@ angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
 
   self.userSignUp = function(email, password, passwordconf) {
     var newUser = { 'email': email, 'password': password, 'passwordconf': passwordconf };
-    $http.post('http://agile-waters-4177.herokuapp.com/users', newUser, 'POST').then(function successCallback(response){
+    $http.post('https://agile-waters-4177.herokuapp.com/users', newUser, 'POST').then(function successCallback(response){
       var user_id = angular.fromJson(response).data.user;
       $cookies.put('currentUser', user_id);
       $state.go('setsong');
@@ -139,7 +132,7 @@ angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
     var currentUser = $cookies.get('currentUser');
     $http({
       method: 'GET',
-      url: 'http://agile-waters-4177.herokuapp.com/users/'+currentUser
+      url: 'https://agile-waters-4177.herokuapp.com/users/'+currentUser
     }).then(function successCallback(response) {
       var data = angular.fromJson(response);
       self.themeSong = 'https://w.soundcloud.com/player/?url=' + response.data.sound + '&auto_play=true';
