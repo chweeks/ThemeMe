@@ -21,19 +21,19 @@
         <img src="img/ionic.png">
       </div>
       <div class="list list-inset">
-        <label class="item item-input" id='email'>
+        <label class="item item-input" id="email">
           <input type="text" ng-model="email" placeholder="Email">
         </label>
-        <label class="item item-input" id='password'>
+        <label class="item item-input" id="password">
           <input type="password" ng-model="password" placeholder="Password">
         </label>
-        <label class="item item-input" id='passwordConf'>
+        <label class="item item-input" id="passwordConf">
           <input type="password" ng-model="passwordconf" placeholder="Password Confirmation">
         </label>
+        <button class="button button-block button-positive" ng-click="me.userSignUp(email, password, passwordconf)" id="signUp">
+          Sign up
+        </button>
       </div>
-      <button class="button button-block button-positive" ng-click="me.userSignUp(email, password, passwordconf)" id='signUp'>
-        Sign up
-      </button>
     </ion-content>
   </body>
 
