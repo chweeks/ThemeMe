@@ -16,31 +16,31 @@ describe("themeMe", function() {
       browser.get('http://localhost:8080/www/index.html');
     });
 
-    it('has a title', function() {
+    it('initialized with a title', function() {
       expect(browser.getTitle()).toEqual('Theme Me');
     });
 
-    it('has a name field', function() {
+    it('initialized with a name field', function() {
       expect(name.isDisplayed()).toBeTrue;
     });
 
-    it('has a message field', function() {
+    it('initialized with a message field', function() {
       expect(message.isDisplayed()).toBeTrue;
     });
 
-    it('has a choose song button', function() {
+    it('displays a choose song button', function() {
       expect(chooseSong.isDisplayed()).toBeTrue;
     });
 
-    it('has a play random song button', function() {
+    it('displays play random song button', function() {
       expect(playRandom.isDisplayed()).toBeTrue;
     });
 
-    it('name field is empty', function() {
+    it('initialized with empty name field', function() {
       expect(name).toBeUndefined;
     });
 
-    it('message field is empty', function() {
+    it('initialized with empty message field', function() {
       expect(message).toBeUndefined;
     });
   });
@@ -58,15 +58,15 @@ describe("themeMe", function() {
       expect(browser.getCurrentUrl()).toEqual('http://localhost:8080/www/index.html#/setsong')
     });
 
-    it('has a search bar', function() {
+    it('displays a search bar', function() {
       expect(searchTerm.isDisplayed()).toBeTrue;
     });
 
-    it('search bar is empty', function() {
+    it('initialized with empty search bar', function() {
       expect(searchTerm).toBeUndefined;
     });
 
-    it('has a search button', function() {
+    it('displays a search button', function() {
       expect(searchButton.isDisplayed()).toBeTrue;
     });
 
@@ -83,15 +83,15 @@ describe("themeMe", function() {
       expect(browser.getCurrentUrl()).toEqual('http://localhost:8080/www/index.html#/playtheme')
     });
 
-    it('has friends unite header', function() {
+    it('displays friends unite header', function() {
       expect(playHeader.getText()).toContain('Friends')
     });
 
-    it('has friends unite header', function() {
+    it('displays username', function() {
       expect(username.isDisplayed()).toBeTrue;
     });
 
-    it('has friends unite header', function() {
+    it('displays comment', function() {
       expect(comment.isDisplayed()).toBeTrue;
     });
 
