@@ -99,5 +99,4 @@ angular.module('thememe', ['ionic', 'ui.router', 'ngCookies'])
       $route.reload();
     };
   };
-
 });
