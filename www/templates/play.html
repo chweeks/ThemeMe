@@ -1,12 +1,14 @@
 <ion-content ng-controller="themeMe as me" ng-init="me.mainSong()">
   <div class="col col-100">
-    <h1>Friends<br>Unite (to)<br>Chill-it (and)<br>Kick it</h1>
+    <h1 id = 'playHeader'>
+      Friends<br>Unite (to)<br>Chill-it (and)<br>Kick it
+    </h1>
   </div>
   <div class="list card">
 
   <div class="item item-avatar">
-    <h2>{{me.username}}</h2>
-    <p>{{me.comment}}</p>
+    <h2 id='username'>{{me.username}}</h2>
+    <p id ='comment'>{{me.comment}}</p>
   </div>
 
   <div class="item item-image">
