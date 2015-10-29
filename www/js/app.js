@@ -1,14 +1,9 @@
-// Ionic Starter App
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
+angular.module('thememe', ['ionic', 'ui.router', 'ngCookies'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
+
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
@@ -32,45 +27,30 @@ angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
 
     .state('setsong', {
       cache: false,
-      url: '/',
+      url: '/setsong',
       templateUrl: 'templates/setsong.html',
       controller: 'themeMe'
     })
 
     .state('playtheme', {
       cache: false,
-      url: '/',
+      url: '/playtheme',
       templateUrl: 'templates/play.html',
       controller: 'themeMe'
     })
 
 })
 
-.controller('themeMe', function($http, $sce, $state, $location, $cookies, $cordovaGeolocation, $interval) {
+.controller('themeMe', function($http, $sce, $state, $location, $cookies) {
   var self = this;
 
   self.searchResults = [];
 
   self.themeSong = '';
 
-  self.userID;
+  self.comment = '';
 
-  self.getUser = function(email, password, passwordconf) {
-    self.userHash = {'email': email, 'password': password, 'passwordConf': passwordconf};
-  };
-
-  self.makeGet = function(id) {
-
-    $http({
-      method: 'GET',
-      url: 'https://agile-waters-4177.herokuapp.com/sounds/'+id
-    }).then(function successCallback(response) {
-      var data = angular.fromJson(response);
-        console.log(response.data.url);
-    });
-  };
-
-
+  self.username = '';
 
   self.searchSC = function(searchQuery) {
     SC.initialize({
@@ -79,96 +59,45 @@ angular.module('thememe', ['ionic', 'ngCordova', 'ui.router', 'ngCookies'])
 
     SC.get('/tracks', {
       q: searchQuery
-    }).then(function(tracks) {
+    }).then(function successCallback(tracks) {
       self.searchResults = tracks;
     });
   };
 
   self.setThemeSong = function(songurl) {
-    // var newUrl = { 'sound': songurl, 'lon': long, 'lat': lat };
     var currentUser = $cookies.get('currentUser');
-    console.log(self.userID);
-    self.distance = "";
-    self.ownLat = "";
-    self.ownLong = "";
-
-    var posOptions = {timeout: 5000, enableHighAccuracy: true};
-
-    $interval(function(){
-     $cordovaGeolocation.getCurrentPosition(posOptions)
-     .then(function(position){
-                  var lat  = position.coords.latitude;
-                  self.ownLat = lat;
-                  var long = position.coords.longitude;
-                  self.ownLong = long;
-                  // self.coor.push(lat);
-                  // self.coor.push(long);
-                  console.log('lat', lat);
-                  console.log('long', long);
-                 //  console.log('coor', self.coor);
-                //  var coords = { 'lon': long , 'lat': lat}
-                //  var currentUser = $cookies.get('currentUser');
-                //  $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, coords, 'POST').then(function successCallback(response){
-                //  });
-                var newUrl = { 'sound': songurl, 'lon': long, 'lat': lat };
-                $http.put('https://agile-waters-4177.herokuapp.com/users/'+currentUser, newUrl, 'PUT').then("Post worked", "You're a scumbag");
-              }, function(error){
-                  console.log('error:', error);
-              });
-    }, 10000);
-    // $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, newUrl, 'PUT').then("Post worked", "You're a scumbag");
+    var newUrl = { 'url': songurl };
+    $http.put('https://agile-waters-4177.herokuapp.com/songs/'+currentUser, newUrl, 'PUT');
   };
 
-  self.userSignUp = function(email, password, passwordconf) {
-    var newUser = { 'email': email, 'password': password, 'passwordconf': passwordconf };
-    $http.post('https://agile-waters-4177.herokuapp.com/users', newUser, 'POST').then(function successCallback(response){
-      var user_id = angular.fromJson(response).data.user;
+  self.userSignUp = function(name, message) {
+    var newUser = { 'person': name, 'comment': message };
+    $http.post('https://agile-waters-4177.herokuapp.com/songs', newUser, 'POST').then(function successCallback(response){
+      var user_id = angular.fromJson(response).data;
+      console.log(user_id)
       $cookies.put('currentUser', user_id);
       $state.go('setsong');
    });
   };
 
   self.mainSong = function() {
-    var currentUser = $cookies.get('currentUser');
     $http({
       method: 'GET',
-      url: 'https://agile-waters-4177.herokuapp.com/users/'+currentUser
+      url: 'https://agile-waters-4177.herokuapp.com/random'
     }).then(function successCallback(response) {
-      var data = angular.fromJson(response);
-      self.themeSong = 'https://w.soundcloud.com/player/?url=' + response.data.sound + '&auto_play=true';
+      var data = angular.fromJson(response.data);
+      self.comment = data.comment;
+      self.username = data.person;
+      self.themeSong = 'https://w.soundcloud.com/player/?url=' + data.url + '&auto_play=true';
     });
 
     self.trustSrc = function(src) {
       return $sce.trustAsResourceUrl(src);
     };
+
+    self.doChange = function() {
+      $route.reload();
+    };
   };
-
-  //  self.distance = "";
-  //  self.ownLat = "";
-  //  self.ownLong = "";
-   //
-  //  var posOptions = {timeout: 5000, enableHighAccuracy: true};
-   //
-  //  $interval(function(){
-  //   $cordovaGeolocation.getCurrentPosition(posOptions)
-  //   .then(function(position){
-  //                var lat  = position.coords.latitude;
-  //                self.ownLat = lat;
-  //                var long = position.coords.longitude;
-  //                self.ownLong = long;
-  //                // self.coor.push(lat);
-  //                // self.coor.push(long);
-  //               //  console.log('lat', lat);
-  //               //  console.log('long', long);
-  //               //  console.log('coor', self.coor);
-  //               var coords = { 'lon': long , 'lat': lat}
-  //               var currentUser = $cookies.get('currentUser');
-  //               $http.put('http://agile-waters-4177.herokuapp.com/users/'+currentUser, coords, 'POST').then(function successCallback(response){
-  //               });
-  //            }, function(error){
-  //                console.log('error:', error);
-  //            });
-  //  }, 10000);
-
 
 });

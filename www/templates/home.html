@@ -1,22 +1,19 @@
 <ion-content ng-controller="themeMe as me">
   <div class="col col-33 col-offset-33" id="pushdown">
-    <img src="img/logo.png">
+    <img src="img/logo.png" width="100%">
   </div>
   <div class="list list-inset">
-    <label class="item item-input" id="email">
-      <input type="text" ng-model="email" placeholder="Email">
+    <label class="item item-input" id="name">
+      <input type="text" ng-model="name" placeholder="Name">
     </label>
-    <label class="item item-input" id="password">
-      <input type="password" ng-model="password" placeholder="Password">
+    <label class="item item-input" id="message">
+      <input type="text" ng-model="message" placeholder="message">
     </label>
-    <label class="item item-input" id="passwordConf">
-      <input type="password" ng-model="passwordconf" placeholder="Password Confirmation">
-    </label>
-    <button class="button button-block button-positive" ng-click="me.userSignUp(email, password, passwordconf)" id="signUp">
-      Sign up
+    <button class="button button-block button-positive" ng-click="me.userSignUp(name, message)" id="signUp">
+      Choose Song
     </button>
     <button class="button button-block button-positive" ui-sref="playtheme" id="playCurrentTheme">
-      Play current user theme
+      Play Random Song
     </button>
   </div>
 </ion-content>
